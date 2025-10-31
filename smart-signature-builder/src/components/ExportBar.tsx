@@ -1,110 +1,92 @@
 import { useState } from 'react';
-import { toPng } from 'html-to-image';
-import { useSignatureStore } from '../store/signatureStore';
-import type { PaletteKey } from '../types';
+import { exportHtml } from '../lib/exportHtml';
+import { exportPng } from '../lib/exportPng';
+import { useSignatureStore } from '../store/useSignatureStore';
+import { SignatureConfigExport } from '../types';
 
 interface ExportBarProps {
-  html: string;
+  previewRef: React.RefObject<HTMLDivElement>;
 }
 
-export function ExportBar({ html }: ExportBarProps) {
-  const palettes = useSignatureStore((state) => state.palettes);
-  const palette = useSignatureStore((state) => state.palette);
-  const setPalette = useSignatureStore((state) => state.setPalette);
-  const presets = useSignatureStore((state) => state.presets);
-  const activePresetId = useSignatureStore((state) => state.activePresetId);
-  const applyPreset = useSignatureStore((state) => state.applyPreset);
-  const reset = useSignatureStore((state) => state.reset);
-  const duplicatePreset = useSignatureStore((state) => state.duplicatePreset);
-  const [status, setStatus] = useState<string | null>(null);
+function download(filename: string, content: string, type: string) {
+  const blob = new Blob([content], { type });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+}
 
-  const handleCopyHtml = async () => {
-    try {
-      await navigator.clipboard.writeText(html);
-      setStatus('HTML copied to clipboard');
-    } catch (error) {
-      console.error(error);
-      setStatus('Unable to copy HTML');
+export function ExportBar({ previewRef }: ExportBarProps) {
+  const state = useSignatureStore((store) => store.state);
+  const [status, setStatus] = useState<string>('');
+
+  const handleHtmlExport = (mode: 'modern' | 'table' | 'single') => {
+    const result = exportHtml(state);
+    if (mode === 'modern') {
+      download('signature-modern.html', result.modern, 'text/html');
+    } else if (mode === 'table') {
+      download('signature-table.html', result.table, 'text/html');
+    } else {
+      download('signature-single.html', result.singleFile, 'text/html');
     }
+    setStatus(`Exported ${mode} HTML.`);
   };
 
-  const handleDownloadHtml = () => {
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'signature.html';
-    link.click();
-    URL.revokeObjectURL(link.href);
-    setStatus('Downloaded signature.html');
-  };
-
-  const handleCopyBase64 = async () => {
-    const node = document.querySelector('.preview-frame') as HTMLElement | null;
-    if (!node) {
-      setStatus('Preview not ready');
+  const handlePngExport = async (scale: number) => {
+    if (!previewRef.current) {
+      setStatus('Preview not ready for PNG export.');
       return;
     }
     try {
-      const dataUrl = await toPng(node, { pixelRatio: 2, skipAutoScale: false, cacheBust: true });
-      await navigator.clipboard.writeText(dataUrl);
-      setStatus('PNG data URL copied');
+      const uri = await exportPng(previewRef.current, state, {
+        scale,
+        watermark: true,
+      });
+      const link = document.createElement('a');
+      link.href = uri;
+      link.download = `signature-${scale}x.png`;
+      link.click();
+      setStatus(`Exported ${scale}x PNG.`);
     } catch (error) {
-      console.error(error);
-      setStatus('Failed to render PNG');
+      setStatus('Failed to export PNG.');
     }
   };
 
-  const handlePaletteChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setPalette(event.target.value as PaletteKey);
-  };
-
-  const handlePresetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    applyPreset(event.target.value);
-  };
-
-  const handleDuplicatePreset = () => {
-    const name = window.prompt('Name for duplicated preset? Leave blank to auto name.');
-    duplicatePreset(name ?? undefined);
+  const handleConfigExport = () => {
+    const payload: SignatureConfigExport = {
+      schemaVersion: '2.0.0',
+      exportedAt: new Date().toISOString(),
+      data: state,
+    };
+    download('signature.signature.json', JSON.stringify(payload, null, 2), 'application/json');
+    setStatus('Exported .signature.json');
   };
 
   return (
-    <div className="export-bar">
-      <button type="button" onClick={handleCopyHtml}>
-        Copy HTML
-      </button>
-      <button type="button" onClick={handleDownloadHtml}>
-        Download .html
-      </button>
-      <button type="button" onClick={handleCopyBase64}>
-        Copy as Base64 &lt;img&gt;
-      </button>
-      <select
-        className="palette-select"
-        value={palette}
-        onChange={handlePaletteChange}
-        aria-label="Palette"
-      >
-        {Object.entries(palettes).map(([key, value]) => (
-          <option key={key} value={key}>
-            {value.name}
-          </option>
-        ))}
-      </select>
-      <select value={activePresetId} onChange={handlePresetChange} aria-label="Presets">
-        <option value="">Custom</option>
-        {presets.map((preset) => (
-          <option key={preset.id} value={preset.id}>
-            {preset.name}
-          </option>
-        ))}
-      </select>
-      <button type="button" className="duplicate-button" onClick={handleDuplicatePreset}>
-        Duplicate preset
-      </button>
-      <button type="button" className="reset-button" onClick={reset}>
-        Reset
-      </button>
-      {status && <span>{status}</span>}
+    <div className="panel-card">
+      <h2>Export</h2>
+      <div className="toolbar" style={{ flexWrap: 'wrap' }}>
+        <button type="button" onClick={() => handleHtmlExport('table')}>
+          HTML (Table)
+        </button>
+        <button type="button" onClick={() => handleHtmlExport('modern')}>
+          HTML (Modern)
+        </button>
+        <button type="button" onClick={() => handleHtmlExport('single')}>
+          Single-file HTML
+        </button>
+        <button type="button" onClick={() => handlePngExport(2)}>
+          PNG 2x
+        </button>
+        <button type="button" onClick={() => handlePngExport(3)}>
+          PNG 3x
+        </button>
+        <button type="button" onClick={handleConfigExport}>
+          Config JSON
+        </button>
+      </div>
+      {status && <div className="shortcut-label">{status}</div>}
     </div>
   );
 }

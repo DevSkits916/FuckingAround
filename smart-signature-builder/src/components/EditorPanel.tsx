@@ -1,247 +1,383 @@
-import { ChangeEvent } from 'react';
-import { useSignatureStore } from '../store/signatureStore';
-import type { SocialPlatform } from '../types';
+import { useMemo } from 'react';
+import { useSignatureStore } from '../store/useSignatureStore';
+import { SocialLink } from '../types';
 
-const fonts = [
-  'Inter, Arial, sans-serif',
-  'Helvetica Neue, Arial, sans-serif',
-  'Georgia, serif',
-  'Roboto, Arial, sans-serif',
-  '"IBM Plex Mono", monospace',
-  '"Courier New", monospace',
-];
+interface EditorPanelProps {
+  onOpenHelp: () => void;
+}
 
-const socialPlatforms: { value: SocialPlatform; label: string }[] = [
-  { value: 'facebook', label: 'Facebook' },
-  { value: 'x', label: 'X / Twitter' },
-  { value: 'reddit', label: 'Reddit' },
-  { value: 'instagram', label: 'Instagram' },
-  { value: 'tiktok', label: 'TikTok' },
-  { value: 'github', label: 'GitHub' },
-  { value: 'linkedin', label: 'LinkedIn' },
-  { value: 'paypal', label: 'PayPal' },
-  { value: 'venmo', label: 'Venmo' },
-  { value: 'cashapp', label: 'Cash App' },
-  { value: 'chime', label: 'Chime' },
-  { value: 'gofundme', label: 'GoFundMe' },
-];
+export function EditorPanel({ onOpenHelp }: EditorPanelProps) {
+  const state = useSignatureStore((store) => store.state);
+  const setState = useSignatureStore((store) => store.setState);
+  const addSocial = useSignatureStore((store) => store.addSocial);
+  const updateSocial = useSignatureStore((store) => store.updateSocial);
+  const removeSocial = useSignatureStore((store) => store.removeSocial);
+  const addCustomField = useSignatureStore((store) => store.addCustomField);
+  const updateCustomField = useSignatureStore((store) => store.updateCustomField);
+  const removeCustomField = useSignatureStore((store) => store.removeCustomField);
+  const toggleGrid = useSignatureStore((store) => store.toggleGrid);
+  const toggleSnap = useSignatureStore((store) => store.toggleSnap);
+  const toggleAlignmentGuides = useSignatureStore((store) => store.toggleAlignmentGuides);
+  const toggleSpacingInspector = useSignatureStore((store) => store.toggleSpacingInspector);
+  const toggleReadOnly = useSignatureStore((store) => store.toggleReadOnly);
+  const setWatermark = useSignatureStore((store) => store.setWatermark);
+  const setTerminalTheme = useSignatureStore((store) => store.setTerminalTheme);
+  const undo = useSignatureStore((store) => store.undo);
+  const redo = useSignatureStore((store) => store.redo);
+  const reset = useSignatureStore((store) => store.reset);
 
-export function EditorPanel() {
-  const signature = useSignatureStore((state) => state.signature);
-  const setField = useSignatureStore((state) => state.setField);
-  const addSocial = useSignatureStore((state) => state.addSocialLink);
-  const updateSocial = useSignatureStore((state) => state.updateSocialLink);
-  const removeSocial = useSignatureStore((state) => state.removeSocialLink);
-  const setLogo = useSignatureStore((state) => state.setLogoDataUrl);
+  const handleIdentityChange = (key: keyof typeof state.identity, value: string) => {
+    setState((draft) => {
+      draft.identity[key] = value;
+    });
+  };
 
-  const handleLogoUpload = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) {
-      setLogo(undefined);
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => {
-      setLogo(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+  const handleThemeChange = <K extends keyof typeof state.theme>(
+    key: K,
+    value: (typeof state.theme)[K],
+  ) => {
+    setState((draft) => {
+      draft.theme[key] = value as (typeof draft.theme)[K];
+    });
+  };
+
+  const watermarkEnabled = state.watermark.enabled;
+
+  const socialCount = useMemo(() => state.social.length, [state.social.length]);
+
+  const createSocial = () => {
+    addSocial({ label: 'New link', platform: 'custom', url: '' });
   };
 
   return (
-    <aside className="editor-panel">
+    <div className="panel-card">
       <h2>Identity</h2>
       <div className="field-group">
-        <label htmlFor="name">Full name</label>
+        <label htmlFor="name">Full Name</label>
         <input
           id="name"
-          value={signature.name}
-          onChange={(event) => setField('name', event.target.value)}
-          placeholder="Your name"
+          value={state.identity.name}
+          onChange={(event) => handleIdentityChange('name', event.target.value)}
         />
       </div>
-      <div className="field-group">
-        <label htmlFor="title">Title</label>
-        <input
-          id="title"
-          value={signature.title}
-          onChange={(event) => setField('title', event.target.value)}
-          placeholder="Role or position"
-        />
-      </div>
-      <div className="field-row">
+      <div className="field-inline">
         <div className="field-group">
-          <label htmlFor="phone">Phone</label>
+          <label htmlFor="title">Title</label>
           <input
-            id="phone"
-            value={signature.phone}
-            onChange={(event) => setField('phone', event.target.value)}
-            placeholder="Phone number"
+            id="title"
+            value={state.identity.title ?? ''}
+            onChange={(event) => handleIdentityChange('title', event.target.value)}
           />
         </div>
+        <div className="field-group">
+          <label htmlFor="secondaryTitle">Secondary Title</label>
+          <input
+            id="secondaryTitle"
+            value={state.identity.secondaryTitle ?? ''}
+            onChange={(event) => handleIdentityChange('secondaryTitle', event.target.value)}
+          />
+        </div>
+      </div>
+      <div className="field-inline">
+        <div className="field-group">
+          <label htmlFor="pronouns">Pronouns</label>
+          <input
+            id="pronouns"
+            value={state.identity.pronouns ?? ''}
+            onChange={(event) => handleIdentityChange('pronouns', event.target.value)}
+          />
+        </div>
+        <div className="field-group">
+          <label htmlFor="tagline">Tagline</label>
+          <input
+            id="tagline"
+            value={state.identity.tagline ?? ''}
+            onChange={(event) => handleIdentityChange('tagline', event.target.value)}
+          />
+        </div>
+      </div>
+      <div className="field-inline">
+        <div className="field-group">
+          <label htmlFor="phone">Primary Phone</label>
+          <input
+            id="phone"
+            value={state.identity.phone ?? ''}
+            onChange={(event) => handleIdentityChange('phone', event.target.value)}
+          />
+        </div>
+        <div className="field-group">
+          <label htmlFor="secondaryPhone">Secondary Phone</label>
+          <input
+            id="secondaryPhone"
+            value={state.identity.secondaryPhone ?? ''}
+            onChange={(event) => handleIdentityChange('secondaryPhone', event.target.value)}
+          />
+        </div>
+      </div>
+      <div className="field-inline">
         <div className="field-group">
           <label htmlFor="email">Email</label>
           <input
             id="email"
-            value={signature.email}
-            onChange={(event) => setField('email', event.target.value)}
-            placeholder="Email address"
+            value={state.identity.email ?? ''}
+            onChange={(event) => handleIdentityChange('email', event.target.value)}
+          />
+        </div>
+        <div className="field-group">
+          <label htmlFor="website">Website</label>
+          <input
+            id="website"
+            value={state.identity.website ?? ''}
+            onChange={(event) => handleIdentityChange('website', event.target.value)}
           />
         </div>
       </div>
       <div className="field-group">
-        <label htmlFor="website">Website</label>
-        <input
-          id="website"
-          value={signature.website}
-          onChange={(event) => setField('website', event.target.value)}
-          placeholder="https://example.com"
+        <label htmlFor="address">Address</label>
+        <textarea
+          id="address"
+          value={state.identity.address ?? ''}
+          onChange={(event) => handleIdentityChange('address', event.target.value)}
         />
       </div>
-      <div className="toggle-row">
-        <label htmlFor="show-address">Include address</label>
-        <input
-          id="show-address"
-          type="checkbox"
-          className="checkbox"
-          checked={signature.showAddress}
-          onChange={(event) => setField('showAddress', event.target.checked)}
-        />
-      </div>
-      {signature.showAddress && (
+      <hr style={{ opacity: 0.2, margin: '16px 0' }} />
+      <h2>Theme</h2>
+      <div className="field-inline">
         <div className="field-group">
-          <label htmlFor="address">Address</label>
-          <textarea
-            id="address"
-            value={signature.address}
-            onChange={(event) => setField('address', event.target.value)}
-            rows={2}
-          />
-        </div>
-      )}
-
-      <h2>Brand</h2>
-      <div className="field-row">
-        <div className="field-group">
-          <label htmlFor="brand-color">Accent color</label>
-          <input
-            id="brand-color"
-            type="color"
-            value={signature.brandColor}
-            onChange={(event) => setField('brandColor', event.target.value)}
-          />
+          <label htmlFor="baseFont">Base Font</label>
+          <select
+            id="baseFont"
+            value={state.theme.baseFont}
+            onChange={(event) =>
+              handleThemeChange('baseFont', event.target.value as typeof state.theme.baseFont)
+            }
+          >
+            <option value="system">System UI</option>
+            <option value="sans">Sans-serif</option>
+            <option value="monospace">Monospace</option>
+          </select>
         </div>
         <div className="field-group">
-          <label htmlFor="text-size">Text size</label>
+          <label htmlFor="fontSize">Base Size</label>
           <input
-            id="text-size"
+            id="fontSize"
             type="number"
-            min={12}
-            max={20}
-            value={signature.textSize}
-            onChange={(event) => setField('textSize', Number(event.target.value))}
+            value={state.theme.baseFontSize}
+            onChange={(event) => handleThemeChange('baseFontSize', Number(event.target.value))}
+          />
+        </div>
+        <div className="field-group">
+          <label htmlFor="lineHeight">Line Height</label>
+          <input
+            id="lineHeight"
+            type="number"
+            step="0.1"
+            value={state.theme.lineHeight}
+            onChange={(event) => handleThemeChange('lineHeight', Number(event.target.value))}
+          />
+        </div>
+      </div>
+      <div className="field-inline">
+        <div className="field-group">
+          <label htmlFor="primary">Primary</label>
+          <input
+            id="primary"
+            type="color"
+            value={state.theme.primary}
+            onChange={(event) => handleThemeChange('primary', event.target.value)}
+          />
+        </div>
+        <div className="field-group">
+          <label htmlFor="textColor">Text</label>
+          <input
+            id="textColor"
+            type="color"
+            value={state.theme.text}
+            onChange={(event) => handleThemeChange('text', event.target.value)}
+          />
+        </div>
+        <div className="field-group">
+          <label htmlFor="subtleText">Subtle Text</label>
+          <input
+            id="subtleText"
+            type="color"
+            value={state.theme.subtleText}
+            onChange={(event) => handleThemeChange('subtleText', event.target.value)}
+          />
+        </div>
+        <div className="field-group">
+          <label htmlFor="divider">Divider</label>
+          <input
+            id="divider"
+            type="color"
+            value={state.theme.divider}
+            onChange={(event) => handleThemeChange('divider', event.target.value)}
           />
         </div>
       </div>
       <div className="field-group">
-        <label htmlFor="font-family">Font</label>
-        <select
-          id="font-family"
-          value={signature.fontFamily}
-          onChange={(event) => setField('fontFamily', event.target.value)}
-        >
-          {fonts.map((font) => (
-            <option key={font} value={font}>
-              {font}
-            </option>
-          ))}
-        </select>
+        <label htmlFor="background">Background</label>
+        <input
+          id="background"
+          type="color"
+          value={state.theme.background}
+          onChange={(event) => handleThemeChange('background', event.target.value)}
+        />
       </div>
-
-      <h2>Logo</h2>
-      <div className="logo-preview">
-        <input type="file" accept="image/*" onChange={handleLogoUpload} />
-        {signature.logoDataUrl && <img src={signature.logoDataUrl} alt="Logo preview" />}
-        {signature.logoDataUrl && (
-          <button type="button" onClick={() => setLogo(undefined)}>
-            Remove
-          </button>
-        )}
-      </div>
-
-      <h2>Social Links</h2>
-      <div className="social-list">
-        {signature.socialLinks.map((link) => (
-          <div key={link.id} className="social-item">
-            <select
-              value={link.platform}
-              onChange={(event) =>
-                updateSocial(link.id, { platform: event.target.value as SocialPlatform })
-              }
-            >
-              {socialPlatforms.map((platform) => (
-                <option key={platform.value} value={platform.value}>
-                  {platform.label}
-                </option>
-              ))}
-            </select>
-            <input
-              value={link.url}
-              onChange={(event) => updateSocial(link.id, { url: event.target.value })}
-              placeholder="https://"
-            />
+      <hr style={{ opacity: 0.2, margin: '16px 0' }} />
+      <h2>Social Links ({socialCount})</h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        {state.social.map((link) => (
+          <div key={link.id} className="panel-card" style={{ padding: '12px' }}>
+            <div className="field-group">
+              <label>Label</label>
+              <input
+                value={link.label}
+                onChange={(event) =>
+                  updateSocial(link.id, (prev: SocialLink) => ({
+                    ...prev,
+                    label: event.target.value,
+                  }))
+                }
+              />
+            </div>
+            <div className="field-inline">
+              <div className="field-group">
+                <label>Platform</label>
+                <input
+                  value={link.platform}
+                  onChange={(event) =>
+                    updateSocial(link.id, (prev) => ({
+                      ...prev,
+                      platform: event.target.value,
+                    }))
+                  }
+                />
+              </div>
+              <div className="field-group">
+                <label>URL</label>
+                <input
+                  value={link.url}
+                  onChange={(event) =>
+                    updateSocial(link.id, (prev) => ({
+                      ...prev,
+                      url: event.target.value,
+                    }))
+                  }
+                />
+              </div>
+            </div>
             <button type="button" onClick={() => removeSocial(link.id)}>
-              ✕
+              Remove
             </button>
           </div>
         ))}
-        <button type="button" className="add-social" onClick={addSocial}>
-          ＋ Social Link
+      </div>
+      <button type="button" onClick={createSocial} style={{ marginTop: '12px' }}>
+        Add Social Link
+      </button>
+      <hr style={{ opacity: 0.2, margin: '16px 0' }} />
+      <h2>Custom Fields</h2>
+      {state.customFields.map((field) => (
+        <div key={field.id} className="field-inline">
+          <div className="field-group">
+            <label>Key</label>
+            <input
+              value={field.key}
+              onChange={(event) =>
+                updateCustomField(field.id, (prev) => ({
+                  ...prev,
+                  key: event.target.value,
+                }))
+              }
+            />
+          </div>
+          <div className="field-group">
+            <label>Value</label>
+            <input
+              value={field.value}
+              onChange={(event) =>
+                updateCustomField(field.id, (prev) => ({
+                  ...prev,
+                  value: event.target.value,
+                }))
+              }
+            />
+          </div>
+          <button type="button" onClick={() => removeCustomField(field.id)}>
+            Remove
+          </button>
+        </div>
+      ))}
+      <button type="button" onClick={addCustomField} style={{ marginTop: '12px' }}>
+        Add Custom Field
+      </button>
+      <hr style={{ opacity: 0.2, margin: '16px 0' }} />
+      <h2>Settings</h2>
+      <div className="field-group">
+        <label>Canvas Options</label>
+        <div className="toolbar">
+          <button type="button" onClick={toggleGrid}>
+            {state.showGrid ? 'Hide Grid' : 'Show Grid'}
+          </button>
+          <button type="button" onClick={toggleSnap}>
+            {state.snapToGrid ? 'Disable Snap' : 'Enable Snap'}
+          </button>
+          <button type="button" onClick={toggleAlignmentGuides}>
+            {state.snapToAlignment ? 'Hide Guides' : 'Show Guides'}
+          </button>
+          <button type="button" onClick={toggleSpacingInspector}>
+            {state.spacingInspector ? 'Hide Spacing' : 'Show Spacing'}
+          </button>
+        </div>
+      </div>
+      <div className="field-group">
+        <label>Preview Mode</label>
+        <button type="button" onClick={toggleReadOnly}>
+          {state.readOnlyPreview ? 'Disable Read-only Preview' : 'Enable Read-only Preview'}
         </button>
       </div>
-
-      <h2>Banner</h2>
-      <div className="toggle-row">
-        <label htmlFor="banner-enabled">Show banner</label>
-        <input
-          id="banner-enabled"
-          type="checkbox"
-          className="checkbox"
-          checked={signature.banner.enabled}
-          onChange={(event) =>
-            setField('banner', { ...signature.banner, enabled: event.target.checked })
-          }
-        />
-      </div>
-      {signature.banner.enabled && (
-        <div className="banner-preview">
+      <div className="field-inline">
+        <div className="field-group">
+          <label>Watermark Text</label>
           <input
-            value={signature.banner.text}
-            onChange={(event) =>
-              setField('banner', { ...signature.banner, text: event.target.value })
-            }
-            placeholder="Banner text"
-          />
-          <input
-            value={signature.banner.url}
-            onChange={(event) =>
-              setField('banner', { ...signature.banner, url: event.target.value })
-            }
-            placeholder="https://"
+            value={state.watermark.text}
+            onChange={(event) => setWatermark(event.target.value, watermarkEnabled)}
           />
         </div>
-      )}
-
-      <h2>Extras</h2>
-      <div className="toggle-row">
-        <label htmlFor="terminal-theme">Terminal theme</label>
-        <input
-          id="terminal-theme"
-          type="checkbox"
-          className="checkbox"
-          checked={signature.terminalTheme}
-          onChange={(event) => setField('terminalTheme', event.target.checked)}
-        />
+        <div className="field-group">
+          <label>Watermark Enabled</label>
+          <button
+            type="button"
+            onClick={() => setWatermark(state.watermark.text, !watermarkEnabled)}
+          >
+            {watermarkEnabled ? 'Disable' : 'Enable'}
+          </button>
+        </div>
       </div>
-    </aside>
+      <div className="field-group">
+        <label>Terminal Theme</label>
+        <button type="button" onClick={() => setTerminalTheme(!state.terminalTheme)}>
+          {state.terminalTheme ? 'Disable Terminal' : 'Enable Terminal'}
+        </button>
+      </div>
+      <div className="field-group">
+        <label>Keyboard</label>
+        <div className="toolbar">
+          <button type="button" onClick={undo}>
+            Undo (Ctrl+Z)
+          </button>
+          <button type="button" onClick={redo}>
+            Redo (Ctrl+Shift+Z)
+          </button>
+          <button type="button" onClick={onOpenHelp}>
+            Open Help
+          </button>
+          <button type="button" onClick={reset}>
+            Reset App
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
