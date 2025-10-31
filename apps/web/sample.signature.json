@@ -1,0 +1,72 @@
+{
+  "version": "v3",
+  "profiles": [
+    {
+      "id": "sample-1",
+      "name": "Sample",
+      "slug": "sample-signature",
+      "updatedAt": "2024-01-01T00:00:00.000Z",
+      "theme": {
+        "id": "sample-theme",
+        "name": "Sample",
+        "colors": {
+          "background": "#ffffff",
+          "text": "#0f172a",
+          "accent": "#2563eb"
+        },
+        "typography": {
+          "fontFamily": "Inter, sans-serif",
+          "baseSize": 14
+        }
+      },
+      "components": [
+        {
+          "id": "contact-1",
+          "componentType": "contact",
+          "data": {
+            "name": "Jamie Rivera",
+            "title": "Customer Success Lead",
+            "email": "jamie@example.com",
+            "layout": "stacked"
+          }
+        },
+        {
+          "id": "social-1",
+          "componentType": "socialRow",
+          "data": {
+            "links": [
+              {
+                "id": "linkedin",
+                "label": "LinkedIn",
+                "url": "https://linkedin.com"
+              }
+            ],
+            "iconSize": 16,
+            "gap": 8,
+            "separator": "dot"
+          }
+        }
+      ],
+      "masterStyles": {},
+      "settings": {
+        "language": "en",
+        "shareScrub": false
+      },
+      "assets": {}
+    }
+  ],
+  "packs": [],
+  "masterStyles": {
+    "avatar": [],
+    "contact": [],
+    "socialRow": [],
+    "banner": [],
+    "customHtml": [],
+    "group": []
+  },
+  "settings": {
+    "language": "en",
+    "telemetry": true,
+    "utmPresets": []
+  }
+}

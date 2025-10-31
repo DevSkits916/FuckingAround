@@ -1,0 +1,13 @@
+{
+  "id": "theme-contrast",
+  "name": "Contrast",
+  "colors": {
+    "background": "#0f172a",
+    "text": "#f8fafc",
+    "accent": "#f97316"
+  },
+  "typography": {
+    "fontFamily": "Inter, sans-serif",
+    "baseSize": 14
+  }
+}

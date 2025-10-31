@@ -3,5 +3,15 @@ dist/
 .DS_Store
 npm-debug.log*
 
+apps/web/dist/
+packages/shared/dist/
+packages/cli/dist/
+**/*.tsbuildinfo
+e2e/test-results/
+apps/web/vite.config.js
+apps/web/vite.config.d.ts
+apps/web/starter.pack.zip
+apps/web/public/icons/
+
 smart-signature-builder/node_modules/
 smart-signature-builder/dist/

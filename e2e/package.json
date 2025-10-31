@@ -1,0 +1,12 @@
+{
+  "name": "@smart-signature/e2e",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.43.1"
+  }
+}
