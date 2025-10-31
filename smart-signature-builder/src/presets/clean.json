@@ -1,0 +1,60 @@
+{
+  "id": "clean",
+  "name": "Clean Default",
+  "signature": {
+    "version": "2.0.0",
+    "identity": {
+      "name": "Alex Lee",
+      "title": "Director of Product",
+      "secondaryTitle": "Smart Signature Builder",
+      "tagline": "Delivering trustworthy email signatures",
+      "pronouns": "they/them",
+      "phone": "+1 (555) 123-4567",
+      "secondaryPhone": "",
+      "email": "alex@example.com",
+      "website": "https://example.com",
+      "address": "123 Market Street, San Francisco, CA"
+    },
+    "social": [],
+    "customFields": [],
+    "theme": {
+      "baseFont": "sans",
+      "baseFontSize": 14,
+      "lineHeight": 1.4,
+      "primary": "#0a84ff",
+      "text": "#1f2933",
+      "subtleText": "#52606d",
+      "divider": "#d9e2ec",
+      "background": "#ffffff"
+    },
+    "nodes": [
+      {
+        "id": "clean-group",
+        "type": "group",
+        "layout": "row",
+        "x": 0,
+        "y": 0,
+        "gap": 16,
+        "children": [],
+        "padding": {
+          "top": 12,
+          "bottom": 12,
+          "left": 12,
+          "right": 12
+        },
+        "backgroundColor": "#ffffff"
+      }
+    ],
+    "selectedIds": [],
+    "showGrid": true,
+    "snapToGrid": true,
+    "snapToAlignment": true,
+    "spacingInspector": true,
+    "readOnlyPreview": false,
+    "watermark": {
+      "text": "",
+      "enabled": false
+    },
+    "terminalTheme": false
+  }
+}
