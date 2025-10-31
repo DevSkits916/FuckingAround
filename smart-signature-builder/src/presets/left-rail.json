@@ -1,0 +1,60 @@
+{
+  "id": "left-rail",
+  "name": "Left Rail",
+  "signature": {
+    "version": "2.0.0",
+    "identity": {
+      "name": "Dana Moss",
+      "title": "Partnerships Lead",
+      "secondaryTitle": "Atlas Ventures",
+      "tagline": "Investing in meaningful change",
+      "pronouns": "she/they",
+      "phone": "+1 (555) 238-1144",
+      "secondaryPhone": "",
+      "email": "dana@atlasventures.fund",
+      "website": "https://atlasventures.fund",
+      "address": "401 Summit Plaza, Denver, CO"
+    },
+    "social": [],
+    "customFields": [],
+    "theme": {
+      "baseFont": "sans",
+      "baseFontSize": 14,
+      "lineHeight": 1.45,
+      "primary": "#0ea5e9",
+      "text": "#082f49",
+      "subtleText": "#0f5d7a",
+      "divider": "#bae6fd",
+      "background": "#f0f9ff"
+    },
+    "nodes": [
+      {
+        "id": "left-rail-group",
+        "type": "group",
+        "layout": "row",
+        "x": 0,
+        "y": 0,
+        "gap": 24,
+        "children": [],
+        "padding": {
+          "top": 18,
+          "bottom": 18,
+          "left": 18,
+          "right": 18
+        },
+        "backgroundColor": "#f0f9ff"
+      }
+    ],
+    "selectedIds": [],
+    "showGrid": true,
+    "snapToGrid": true,
+    "snapToAlignment": true,
+    "spacingInspector": true,
+    "readOnlyPreview": false,
+    "watermark": {
+      "text": "",
+      "enabled": false
+    },
+    "terminalTheme": false
+  }
+}

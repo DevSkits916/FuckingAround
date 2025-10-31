@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "2.0.0",
+  "exportedAt": "2024-01-01T00:00:00.000Z",
+  "data": {
+    "version": "2.0.0",
+    "identity": {
+      "name": "Jamie Rivera",
+      "title": "Customer Success Lead",
+      "secondaryTitle": "Smart Signature Builder",
+      "tagline": "Trusted email signatures at scale",
+      "pronouns": "they/them",
+      "phone": "+1 (555) 234-5678",
+      "secondaryPhone": "",
+      "email": "jamie@signature.app",
+      "website": "https://signature.app",
+      "address": "500 Mission Street, Suite 20, San Francisco, CA"
+    },
+    "social": [
+      {
+        "id": "linkedin",
+        "label": "LinkedIn",
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/jamierivera",
+        "username": "jamierivera"
+      },
+      {
+        "id": "github",
+        "label": "GitHub",
+        "platform": "github",
+        "url": "https://github.com/jamierivera"
+      }
+    ],
+    "customFields": [
+      {
+        "id": "office",
+        "key": "Office",
+        "value": "HQ — 10th Floor"
+      }
+    ],
+    "theme": {
+      "baseFont": "sans",
+      "baseFontSize": 14,
+      "lineHeight": 1.45,
+      "primary": "#0ea5e9",
+      "text": "#0f172a",
+      "subtleText": "#334155",
+      "divider": "#cbd5f5",
+      "background": "#ffffff"
+    },
+    "nodes": [
+      {
+        "id": "group",
+        "type": "group",
+        "layout": "row",
+        "x": 0,
+        "y": 0,
+        "gap": 20,
+        "children": [],
+        "padding": {
+          "top": 16,
+          "bottom": 16,
+          "left": 16,
+          "right": 16
+        },
+        "backgroundColor": "#ffffff"
+      },
+      {
+        "id": "cta",
+        "type": "text",
+        "text": "Schedule a call",
+        "x": 120,
+        "y": 160,
+        "fontSize": 14
+      },
+      {
+        "id": "custom",
+        "type": "customHtml",
+        "x": 0,
+        "y": 200,
+        "html": "<div style=\"padding:8px 12px;border-radius:12px;background:#0ea5e9;color:#fff;display:inline-block;\">Certified Trusted Sender</div>"
+      }
+    ],
+    "selectedIds": [],
+    "showGrid": true,
+    "snapToGrid": true,
+    "snapToAlignment": true,
+    "spacingInspector": true,
+    "readOnlyPreview": false,
+    "watermark": {
+      "text": "Signature Builder",
+      "enabled": false
+    },
+    "terminalTheme": false
+  }
+}
