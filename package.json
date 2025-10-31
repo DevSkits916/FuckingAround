@@ -1,0 +1,23 @@
+{
+  "name": "smart-signature-builder-monorepo",
+  "version": "3.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "e2e"
+  ],
+  "scripts": {
+    "build": "npm run build -w apps/web && npm run build -w packages/cli",
+    "dev": "npm run dev -w apps/web",
+    "preview": "npm run preview -w apps/web",
+    "test": "npm run test -w apps/web && npm run test -w e2e",
+    "lint": "npm run lint -w apps/web",
+    "format": "prettier --write .",
+    "generate:starter-pack": "node scripts/write-starter-pack.mjs",
+    "generate:pwa-icons": "node scripts/write-pwa-icons.mjs"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.2"
+  }
+}

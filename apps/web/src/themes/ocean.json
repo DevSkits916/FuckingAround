@@ -1,0 +1,13 @@
+{
+  "id": "ocean",
+  "name": "Ocean",
+  "colors": {
+    "background": "#f8fafc",
+    "text": "#0f172a",
+    "accent": "#0ea5e9"
+  },
+  "typography": {
+    "fontFamily": "Inter, sans-serif",
+    "baseSize": 14
+  }
+}

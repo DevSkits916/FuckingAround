@@ -1,0 +1,13 @@
+{
+  "id": "theme-starter",
+  "name": "Starter",
+  "colors": {
+    "background": "#ffffff",
+    "text": "#0f172a",
+    "accent": "#2563eb"
+  },
+  "typography": {
+    "fontFamily": "Inter, sans-serif",
+    "baseSize": 14
+  }
+}

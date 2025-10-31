@@ -1,0 +1,24 @@
+{
+  "name": "@smart-signature/shared",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "lz-string": "^1.5.0",
+    "nanoid": "^4.0.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

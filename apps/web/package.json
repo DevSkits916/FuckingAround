@@ -1,0 +1,41 @@
+{
+  "name": "smart-signature-builder-web",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "npm run ensure:pwa-icons",
+    "dev": "vite",
+    "prebuild": "npm run ensure:pwa-icons",
+    "build": "tsc -b && vite build",
+    "prepreview": "npm run ensure:pwa-icons",
+    "preview": "vite preview",
+    "pretest": "npm run ensure:pwa-icons",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "ensure:pwa-icons": "node ../../scripts/write-pwa-icons.mjs"
+  },
+  "dependencies": {
+    "@smart-signature/shared": "file:../packages/shared",
+    "immer": "^10.2.0",
+    "jszip": "^3.10.1",
+    "lz-string": "^1.5.0",
+    "nanoid": "^4.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^4.5.2"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.5",
+    "@testing-library/react": "^15.0.3",
+    "@types/jszip": "^3.4.1",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "jsdom": "^24.1.1",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.0",
+    "vitest": "^1.6.0"
+  }
+}

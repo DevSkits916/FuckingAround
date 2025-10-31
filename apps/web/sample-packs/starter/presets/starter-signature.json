@@ -1,0 +1,26 @@
+{
+  "id": "starter-1",
+  "name": "Starter Signature",
+  "slug": "starter-signature",
+  "updatedAt": "2025-10-31T08:28:23.490996Z",
+  "theme": {
+    "id": "theme-starter",
+    "name": "Starter",
+    "colors": {
+      "background": "#ffffff",
+      "text": "#0f172a",
+      "accent": "#2563eb"
+    },
+    "typography": {
+      "fontFamily": "Inter, sans-serif",
+      "baseSize": 14
+    }
+  },
+  "components": [],
+  "masterStyles": {},
+  "settings": {
+    "language": "en",
+    "shareScrub": false
+  },
+  "assets": {}
+}
